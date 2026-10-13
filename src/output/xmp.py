@@ -50,7 +50,8 @@ def write_xmp(
     )
     content = XMP_TEMPLATE.format(
         rating=max(0, min(5, rating)),
-        label=html.escape(label, quote=False),
+        # Label is an XML attribute, so escape quotation marks too.
+        label=html.escape(label),
         keywords=kw_xml,
         caption=html.escape(caption, quote=False),
     )
