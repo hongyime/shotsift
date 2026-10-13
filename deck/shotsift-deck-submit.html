@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShotSift — ASUS UGen AI League Stage I</title>
+<style>
+:root { --accent: #00d4ff; --accent2: #ff9f1c; --muted: #9aa0a6; }
+.reveal { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; }
+.reveal h1, .reveal h2, .reveal h3 { text-transform: none; letter-spacing: -0.02em; }
+.reveal h1 { font-size: 2.6em; }
+.reveal h2 { font-size: 1.7em; color: var(--accent); margin-bottom: 0.6em; }
+.reveal h3 { font-size: 1.15em; }
+.reveal p, .reveal li { font-size: 0.85em; line-height: 1.55; }
+.reveal ul { list-style: none; margin-left: 0; }
+.reveal ul li { padding-left: 1.2em; position: relative; margin-bottom: 0.45em; }
+.reveal ul li::before { content: "▸"; color: var(--accent); position: absolute; left: 0; }
+.reveal table { font-size: 0.62em; margin: 0.6em auto; border-collapse: collapse; }
+.reveal th, .reveal td { border: 1px solid #3a3f44; padding: 0.55em 0.8em; }
+.reveal th { background: #161a1e; color: var(--accent); }
+.reveal th.hl, .reveal td.hl { color: var(--accent2); font-weight: 700; }
+.badge { display: inline-block; border: 1px solid var(--accent); color: var(--accent);
+         border-radius: 999px; padding: 0.25em 1em; font-size: 0.55em; margin: 0.25em; }
+.stat { font-size: 2.2em; font-weight: 800; color: var(--accent); }
+.stat-label { font-size: 0.6em; color: var(--muted); }
+.cards { display: flex; gap: 1em; justify-content: center; margin-top: 1em; }
+.card { background: #14181d; border: 1px solid #2a2f35; border-radius: 12px;
+        padding: 1em 1.2em; flex: 1; max-width: 30%; }
+.card .icon { font-size: 2em; }
+.card h3 { color: var(--accent2); font-size: 0.9em; margin: 0.4em 0; }
+.card p { font-size: 0.68em; color: #cfd4d9; }
+.small { font-size: 0.6em; color: var(--muted); }
+.flow { display: flex; align-items: center; justify-content: center; gap: 0.5em; margin: 1em 0; flex-wrap: wrap; }
+.flow .node { background: #14181d; border: 2px solid var(--accent); border-radius: 10px;
+              padding: 0.6em 1em; font-size: 0.7em; }
+.flow .node.cpu { border-color: var(--accent2); }
+.flow .arrow { color: var(--accent); font-size: 1.4em; }
+.tier { border: 2px dashed var(--accent); border-radius: 12px; padding: 0.8em; margin: 0.8em 0; }
+.tier h4 { color: var(--accent); font-size: 0.75em; margin-bottom: 0.4em; }
+.hero-imgs { display: flex; gap: 1em; justify-content: center; align-items: flex-end; }
+.hero-imgs figure { margin: 0; text-align: center; }
+.hero-imgs img { max-height: 300px; border-radius: 8px; border: 3px solid #2a2f35; }
+.hero-imgs figcaption { font-size: 0.6em; color: var(--muted); margin-top: 0.4em; }
+.hero-imgs .keeper img { border-color: var(--accent2); }
+a { color: var(--accent); }
+.kicker { color: var(--muted); font-size: 0.65em; letter-spacing: 0.15em; text-transform: uppercase; }
+@media print {
+  .reveal .slides section { page-break-after: always; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+
+<style>
+/* Submission print build: self-contained, one page per slide. */
+html, body { margin: 0; padding: 0; background: #0a0e12; color: #e8eaed;
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+@page { size: A4; margin: 0; }
+.deck section { box-sizing: border-box; width: 210mm; height: 296mm;
+  padding: 18mm 16mm; page-break-after: always; page-break-inside: avoid;
+  overflow: hidden; background: #0a0e12; color: #e8eaed; }
+.deck section:last-of-type { page-break-after: avoid; }
+</style>
+
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- 1. TITLE -->
+<div class="deck">
+<section data-background-color="#0a0e12">
+  <p class="kicker">ASUS UGen AI League · Stage I Proposal</p>
+  <h1>ShotSift</h1>
+  <h3 style="color:#cfd4d9">The cull happens <em style="color:var(--accent2)">while you shoot</em>.</h3>
+  <p style="margin-top:1.5em">
+    <span class="badge">Creator AI</span>
+    <span class="badge">Battlefield Lightning · ASUS UGen300</span>
+    <span class="badge">Onsite Track</span>
+  </p>
+  <p style="margin-top:1.5em; font-size:0.75em">Bryan Seah · Singapore Management University</p>
+  <p class="small">github.com/hongyime/shotsift</p>
+</section>
+
+<!-- 2. MIDNIGHT AFTER EVERY EVENT -->
+<section>
+  <h2>Midnight after every event</h2>
+  <p>Real numbers, from my own archive (<span class="small">02 CLIENT</span>):</p>
+  <div class="cards" style="margin-top:1.2em">
+    <div class="card"><div class="stat">20</div><div class="stat-label">events shot<br>2023 – 2026</div></div>
+    <div class="card"><div class="stat">5,674</div><div class="stat-label">frames in the archive<br>(a subset of my shoots)</div></div>
+    <div class="card"><div class="stat">3–4<span style="font-size:0.5em"> hrs</span></div><div class="stat-label">spent culling<br>per event</div></div>
+  </div>
+  <p style="margin-top:1.2em">Every event ends the same way: <strong>thousands of frames, one laptop, an evening gone to culling</strong> — while the client's social team waits for photos that arrive the next day.</p>
+</section>
+
+<!-- 3. THREE GAPS -->
+<section>
+  <h2>Three gaps no tool closes</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">⏱</div>
+      <h3>Timing</h3>
+      <p>Every culling tool works <strong>after</strong> the shoot, on the photographer's laptop. Nothing helps <strong>during</strong> the event, when the client's comms team needs content.</p>
+    </div>
+    <div class="card">
+      <div class="icon">📷📷</div>
+      <h3>Multi-shooter</h3>
+      <p>Several photographers cover one event; frames scatter across memory cards and get merged by hand. Nobody's photos are in one place until long after.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🔒</div>
+      <h3>Privacy</h3>
+      <p>Corporate clients don't want attendee faces uploaded to a cloud service — a real PDPA concern. Cloud culling is a contractual problem, not a convenience.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. WHO FEELS IT -->
+<section>
+  <h2>Who feels it</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">📸</div>
+      <h3>The event photographer</h3>
+      <p>"I shot 2,000 frames tonight and I'll spend tomorrow morning culling instead of booking the next job."</p>
+    </div>
+    <div class="card">
+      <div class="icon">📣</div>
+      <h3>The client's comms team</h3>
+      <p>"The keynote ended two hours ago and we have nothing to post. Our moment is gone."</p>
+    </div>
+    <div class="card">
+      <div class="icon">🎛</div>
+      <h3>The AV / production house</h3>
+      <p>"I coordinate three shooters and the deliverables land as three separate piles I have to reconcile."</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5. COMPARISON TABLE -->
+<section>
+  <h2>Existing tools — and the gap</h2>
+  <table>
+    <tr><th></th><th>AfterShoot</th><th>Narrative Select</th><th>FilterPixel</th><th class="hl">ShotSift</th></tr>
+    <tr><td><strong>When</strong></td><td>After shoot</td><td>After shoot</td><td>After shoot</td><td class="hl">During the shoot</td></tr>
+    <tr><td><strong>Where it runs</strong></td><td>On-device</td><td>On-device</td><td>Cloud</td><td class="hl">On-device (edge)</td></tr>
+    <tr><td><strong>Multi-shooter merge</strong></td><td>No</td><td>No</td><td>No</td><td class="hl">Yes</td></tr>
+    <tr><td><strong>Personal taste</strong></td><td>AI profiles¹</td><td>AI presets¹</td><td>Generic</td><td class="hl">On-device taste model²</td></tr>
+  </table>
+  <p class="small">¹ Requires 1,500–5,000 previously edited images in a Lightroom catalog (per vendor sites).
+  ² Stage II roadmap — trained on-device on the photographer's own keep/reject decisions, no cloud.<br>
+  Competitor data from vendor websites, verified Oct 2026 (see appendix A3). No tool above processes frames during the shoot.</p>
+</section>
+
+<!-- 6. ONE SENTENCE -->
+<section data-background-color="#0a0e12">
+  <h2>ShotSift in one sentence</h2>
+  <div class="flow" style="margin-top:1.5em">
+    <div class="node">Shoot</div><div class="arrow">→</div>
+    <div class="node">seconds later, starred picks<br>in a live gallery</div><div class="arrow">→</div>
+    <div class="node">import to Lightroom<br>with the cull already done</div>
+  </div>
+  <p class="small" style="margin-top:1.5em">An edge appliance — host + ASUS UGen300 — that scores every frame as it lands and writes the cull into XMP sidecars your editor already understands.</p>
+</section>
+
+<!-- 7. USER JOURNEY -->
+<section>
+  <h2>User journey</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🔌</div>
+      <h3>Before the event</h3>
+      <p>Plug in the box and a venue-local access point. Cameras connect over FTP-over-Wi-Fi — the feature most pro bodies already have. Card reader as fallback.</p>
+    </div>
+    <div class="card">
+      <div class="icon">⚡</div>
+      <h3>During the event</h3>
+      <p>Frames arrive as they are shot. The client's social team browses a live gallery on the local network — captioned picks, while the event is still running.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🗂</div>
+      <h3>After the event</h3>
+      <p>XMP sidecars carry star ratings, labels and keywords next to the RAWs. Import to Lightroom or Capture One — the cull is already there. Event data auto-deletes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. INNOVATION 1 -->
+<section>
+  <h2>Innovation 1 — it learns your taste</h2>
+  <div class="flow">
+    <div class="node cpu">Your keep / reject history</div><div class="arrow">→</div>
+    <div class="node">CLIP embeddings<br>+ quality features</div><div class="arrow">→</div>
+    <div class="node cpu">small model on CPU</div><div class="arrow">→</div>
+    <div class="node">keeper score</div>
+  </div>
+  <p>Generic "aesthetic" scores don't match how professionals choose. A taste model trained on <strong>your own decisions</strong> culls the way <strong>you</strong> cull.</p>
+  <p class="small" style="border-left:3px solid var(--accent2); padding-left:1em; text-align:left">
+    Honest framing: taste-model training is <strong>Stage II</strong> work. Stage I demonstrates the full pipeline with heuristic weights (focus + exposure). No rating history was available for Stage I — and none was fabricated.</p>
+</section>
+
+<!-- 9. INNOVATION 2 -->
+<section>
+  <h2>Innovation 2 — three-tier cascade, one chip</h2>
+  <div class="tier">
+    <h4>TIER 1 · every frame · Hailo-10H vision</h4>
+    <p class="small">SCRFD face detection → ArcFace embeddings (identity clustering) · 68-pt landmarks → blink check · CLIP image encoder → semantic + aesthetic</p>
+  </div>
+  <div class="tier" style="border-color:var(--accent2)">
+    <h4 style="color:var(--accent2)">TIER 2 · top picks only · Hailo-10H GenAI</h4>
+    <p class="small">Qwen2-VL-2B → captions + keywords · Qwen2-1.5B function-calling → natural-language search ("speaker laughing with the CEO")</p>
+  </div>
+  <p>One UGen300, shared by round-robin scheduling. Custom logic stays on the CPU — <strong>no Hailo model compilation required</strong>.</p>
+</section>
+
+<!-- 10. HARDWARE ARCHITECTURE -->
+<section>
+  <h2>Hardware architecture</h2>
+  <svg role="img" aria-label="Hardware architecture diagram" viewBox="0 0 800 300" style="width:100%; max-width:760px; margin:0 auto; display:block; font-family:inherit">
+    <title>Hardware architecture: cameras connect via venue-local access point to host with ASUS UGen300, outputting to LAN gallery</title>
+    <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#00d4ff"/></marker></defs>
+    <g font-size="13" fill="#cfd4d9" text-anchor="middle">
+      <rect x="20" y="40" width="110" height="60" rx="8" fill="#14181d" stroke="#00d4ff" stroke-width="2"/>
+      <text x="75" y="65">Camera A</text><text x="75" y="84" font-size="11" fill="#9aa0a6">FTP / Wi-Fi</text>
+      <rect x="20" y="120" width="110" height="60" rx="8" fill="#14181d" stroke="#00d4ff" stroke-width="2"/>
+      <text x="75" y="145">Camera B</text><text x="75" y="164" font-size="11" fill="#9aa0a6">FTP / Wi-Fi</text>
+      <rect x="20" y="200" width="110" height="60" rx="8" fill="#14181d" stroke="#00d4ff" stroke-width="2"/>
+      <text x="75" y="225">Card / USB</text><text x="75" y="244" font-size="11" fill="#9aa0a6">fallback ingest</text>
+      <rect x="200" y="110" width="120" height="80" rx="8" fill="#14181d" stroke="#ff9f1c" stroke-width="2"/>
+      <text x="260" y="140">Venue AP</text><text x="260" y="160" font-size="11" fill="#9aa0a6">isolated, own HW</text>
+      <rect x="390" y="90" width="150" height="120" rx="8" fill="#14181d" stroke="#00d4ff" stroke-width="3"/>
+      <text x="465" y="118" font-weight="bold" fill="#fff">Host</text>
+      <text x="465" y="140" font-size="11">Pi 5 / mini PC</text>
+      <rect x="405" y="152" width="120" height="44" rx="6" fill="#0a2a33" stroke="#00d4ff"/>
+      <text x="465" y="172" font-size="12" fill="#00d4ff">UGen300 · Hailo-10H</text>
+      <text x="465" y="190" font-size="10" fill="#9aa0a6">M.2 or USB variant</text>
+      <rect x="610" y="110" width="150" height="80" rx="8" fill="#14181d" stroke="#ff9f1c" stroke-width="2"/>
+      <text x="685" y="140">LAN gallery</text><text x="685" y="160" font-size="11" fill="#9aa0a6">social team · phones</text>
+      <line x1="130" y1="70" x2="200" y2="130" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah)"/>
+      <line x1="130" y1="150" x2="200" y2="150" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah)"/>
+      <line x1="130" y1="230" x2="200" y2="170" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah)"/>
+      <line x1="320" y1="150" x2="390" y2="150" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah)"/>
+      <line x1="540" y1="150" x2="610" y2="150" stroke="#ff9f1c" stroke-width="2" marker-end="url(#ah)"/>
+    </g>
+  </svg>
+  <p class="small">All venue-local. Bring your own access point — never depend on crowded house Wi-Fi. Nothing leaves the venue.</p>
+</section>
+
+<!-- 11. SOFTWARE ARCHITECTURE -->
+<section>
+  <h2>Software architecture</h2>
+  <svg role="img" aria-label="Software pipeline diagram" viewBox="0 0 800 340" style="width:100%; max-width:760px; margin:0 auto; display:block">
+    <title>Software pipeline: ingest feeds Tier 1 vision models on Hailo-10H, then CPU scoring, then Tier 2 GenAI for top picks</title>
+    <defs><marker id="ah2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#00d4ff"/></marker></defs>
+    <g font-size="12" fill="#cfd4d9" text-anchor="middle">
+      <rect x="300" y="8" width="200" height="46" rx="8" fill="#14181d" stroke="#9aa0a6" stroke-width="2"/>
+      <text x="400" y="27">INGEST · vsftpd + inotify</text><text x="400" y="44" font-size="10" fill="#9aa0a6">JPEG preview · EXIF</text>
+      <line x1="400" y1="54" x2="400" y2="72" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah2)"/>
+      <rect x="120" y="72" width="560" height="110" rx="10" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="8 5"/>
+      <text x="400" y="92" font-size="11" fill="#00d4ff" font-weight="bold">TIER 1 · every frame · Hailo-10H</text>
+      <text x="250" y="118" font-size="11">SCRFD → faces → ArcFace</text>
+      <text x="250" y="136" font-size="11">68-pt landmarks → blink</text>
+      <text x="560" y="118" font-size="11">CLIP encoder</text>
+      <text x="560" y="136" font-size="11">semantic + aesthetic</text>
+      <text x="400" y="164" font-size="10" fill="#9aa0a6">round-robin device sharing</text>
+      <line x1="400" y1="182" x2="400" y2="200" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah2)"/>
+      <rect x="180" y="200" width="440" height="46" rx="8" fill="#14181d" stroke="#ff9f1c" stroke-width="2"/>
+      <text x="400" y="219">CPU SCORING · focus · exposure · burst group · keeper</text>
+      <text x="400" y="236" font-size="10" fill="#9aa0a6">no custom Hailo compilation needed</text>
+      <line x1="400" y1="246" x2="400" y2="264" stroke="#00d4ff" stroke-width="2" marker-end="url(#ah2)"/>
+      <rect x="180" y="264" width="440" height="56" rx="10" fill="none" stroke="#00d4ff" stroke-width="2" stroke-dasharray="8 5"/>
+      <text x="400" y="284" font-size="11" fill="#00d4ff" font-weight="bold">TIER 2 · top-N only · Hailo-10H GenAI</text>
+      <text x="400" y="304" font-size="11">Qwen2-VL-2B captions · Qwen2-1.5B-FC search</text>
+    </g>
+  </svg>
+  <p class="small">Outputs: XMP sidecars · FastAPI LAN gallery · SQLite · Docker Compose · event data wiped after delivery</p>
+</section>
+
+<!-- 12. MODEL MAP -->
+<section>
+  <h2>Model map</h2>
+  <table>
+    <tr><th>Model</th><th>Task</th><th>Runs on</th><th>Source</th></tr>
+    <tr><td>SCRFD</td><td>Face detection</td><td>Hailo-10H</td><td>Hailo Model Zoo</td></tr>
+    <tr><td>ArcFace</td><td>Identity embeddings</td><td>Hailo-10H</td><td>Hailo Model Zoo</td></tr>
+    <tr><td>3DDFA</td><td>68-pt landmarks → blink</td><td>Hailo-10H</td><td>Hailo Model Zoo</td></tr>
+    <tr><td>CLIP (image)</td><td>Semantic + aesthetic</td><td>Hailo-10H</td><td>Hailo Model Zoo</td></tr>
+    <tr><td>Qwen2-VL-2B</td><td>Captions + keywords</td><td>Hailo-10H</td><td>Hailo GenAI Zoo</td></tr>
+    <tr><td>Qwen2-1.5B-FC</td><td>Natural-language search</td><td>Hailo-10H</td><td>Hailo GenAI Zoo</td></tr>
+    <tr><td>Heuristics + taste head</td><td>Focus / exposure / burst / keeper</td><td>CPU</td><td>Custom (this repo)</td></tr>
+  </table>
+  <p class="small">Only stock precompiled models run on the Hailo. Custom logic stays on CPU — <strong>no custom compilation required</strong>. Strong feasibility signal for a 4-week build.</p>
+</section>
+
+<!-- 13. PRIVACY -->
+<section>
+  <h2>Privacy by design</h2>
+  <ul style="font-size:1.05em">
+    <li><strong>No cloud.</strong> Every byte is processed on-device or on the venue LAN.</li>
+    <li><strong>Scoped embeddings.</strong> Face embeddings live for one event, then auto-delete.</li>
+    <li><strong>RAWs never leave the venue.</strong> Only embedded JPEG previews are processed.</li>
+    <li><strong>Opt-in search.</strong> The "find my photos" selfie kiosk has a consent screen.</li>
+  </ul>
+  <p class="small" style="margin-top:1em">Biometric data is personal data under Singapore's PDPA — ShotSift is architected so there is nothing to breach.</p>
+</section>
+
+<!-- 14. STAGE I PROTOTYPE -->
+<section>
+  <h2>Stage I prototype — what works today</h2>
+  <div class="hero-imgs">
+    <figure><img src="assets/burst1_dark.jpg" alt="Underexposed frame"><figcaption>underexposed → rejected</figcaption></figure>
+    <figure><img src="assets/burst1_soft.jpg" alt="Soft focus frame"><figcaption>soft focus → flagged</figcaption></figure>
+    <figure class="keeper"><img src="assets/burst1_sharp.jpg" alt="Sharp keeper frame"><figcaption>★ sharp → 4-star keeper</figcaption></figure>
+  </div>
+  <p style="margin-top:1em"><strong>Demonstrated:</strong> burst grouping · focus scoring · keeper ranking · star ratings · XMP sidecars · HTML gallery — verified end-to-end on a 3-frame burst.</p>
+  <p class="small"><strong>Stage II:</strong> face detection · blink detection · CLIP · captions · search · taste model.</p>
+</section>
+
+<!-- 15. EXPECTED OUTCOMES -->
+<section>
+  <h2>Expected outcomes — validation plan</h2>
+  <p class="small">Targets for Stage II validation, not claims:</p>
+  <table>
+    <tr><th>Metric</th><th>Target / method</th></tr>
+    <tr><td>Shutter-to-gallery latency</td><td>Measured capture-timestamp → gallery render</td></tr>
+    <tr><td>Sustained throughput</td><td>FPS under multi-shooter burst load</td></tr>
+    <tr><td>Taste-model precision@K</td><td>vs. historical picks, held out by whole event</td></tr>
+    <tr><td>Duplicate collapse rate</td><td>Share of frames folded into burst groups</td></tr>
+    <tr><td>Power</td><td>Watts at the wall</td></tr>
+    <tr><td>Time saved</td><td>Manual cull vs. ShotSift-assisted, same event</td></tr>
+  </table>
+</section>
+
+<!-- 16. STAGE II PLAN -->
+<section>
+  <h2>Four-week Stage II plan</h2>
+  <div class="cards">
+    <div class="card"><h3>Week 1</h3><p>Port Tier 1 to the Hailo-10H. Benchmark per-model latency; confirm zoo model versions against HailoRT.</p></div>
+    <div class="card"><h3>Week 2</h3><p>GenAI tier (Qwen2-VL-2B, 1.5B-FC) + round-robin device sharing across all models.</p></div>
+    <div class="card"><h3>Week 3</h3><p>Live gallery, XMP writer, multi-camera FTP ingest. Docker Compose packaging.</p></div>
+    <div class="card"><h3>Week 4</h3><p>Validation runs on two real shoots. Documentation, demo rehearsal, submission.</p></div>
+  </div>
+</section>
+
+<!-- 17. RISKS -->
+<section>
+  <h2>Risks and mitigations</h2>
+  <table>
+    <tr><th>Risk</th><th>Mitigation</th></tr>
+    <tr><td>Model missing from Hailo-10H zoo</td><td>CPU fallback via ONNX Runtime; noted in deck</td></tr>
+    <tr><td>VLM latency (seconds/image)</td><td>Background queue; captions for top picks only</td></tr>
+    <tr><td>Venue Wi-Fi unreliability</td><td>Own access point; Ethernet for the host</td></tr>
+    <tr><td>Taste-model overfitting</td><td>Event-level holdout + generic baseline comparison</td></tr>
+    <tr><td>Hardware arrival timing</td><td>Host-agnostic Docker build; prototype runs on any laptop</td></tr>
+  </table>
+</section>
+
+<!-- 18. BUSINESS MODEL -->
+<section>
+  <h2>Business model</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="icon">🎛</div>
+      <h3>1 · AV rental add-on</h3>
+      <p>Per-event rental through AV and event-production houses — a line item on the kit list. No consumer sales cycle; I know this world.</p>
+    </div>
+    <div class="card">
+      <div class="icon">🏢</div>
+      <h3>2 · Studio subscription</h3>
+      <p>Per-seat subscription for photography studios running multi-shooter events — taste model + gallery hosting per seat.</p>
+    </div>
+    <div class="card">
+      <div class="icon">💻</div>
+      <h3>3 · ASUS channel</h3>
+      <p>Reference software for a ProArt laptop + UGen300 creator bundle. A product ASUS's own business could sell.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 19. GO TO MARKET -->
+<section>
+  <h2>Go-to-market — and why me</h2>
+  <ul style="font-size:1.05em">
+    <li><strong>First pilots</strong> from my own photographer and AV network — youth, community and corporate events I already shoot and crew.</li>
+    <li><strong>Zero workflow change:</strong> XMP sidecars mean Lightroom / Capture One users adopt it without learning anything new.</li>
+    <li><strong>Why me:</strong> a working event photographer and AV operator who also builds self-hosted AI infrastructure — I live both sides of this problem.</li>
+  </ul>
+</section>
+
+<!-- 20. REFERENCES -->
+<section>
+  <h2>References and links</h2>
+  <div style="font-size:0.7em; columns:2; text-align:left; max-width:900px; margin:0 auto">
+    <p>▸ github.com/hongyime/shotsift — prototype + docs</p>
+    <p>▸ Demo video (unlisted YouTube link in submission)</p>
+    <p>▸ Hailo Model Zoo — hailo.ai/developer-zone (SCRFD, ArcFace, CLIP)</p>
+    <p>▸ Hailo GenAI Zoo (Qwen2-VL-2B, Qwen2-1.5B-FC)</p>
+    <p>▸ Deng et al., "ArcFace" (CVPR 2019); Zhang et al., SCRFD</p>
+    <p>▸ Radford et al., "CLIP" (ICML 2021)</p>
+    <p>▸ Qwen2-VL technical report (2024)</p>
+    <p>▸ McInnes et al., HDBSCAN (2017)</p>
+    <p>▸ Adobe XMP Specification</p>
+    <p>▸ PDPC Singapore — guidance on biometric data</p>
+    <p>▸ aftershoot.com · narrative.so · filterpixel.com (competitor data, Oct 2026)</p>
+  </div>
+  <p style="margin-top:1.5em"><span class="badge">Creator AI</span><span class="badge">Lightning · UGen300</span><span class="badge">Onsite</span></p>
+  <p style="font-size:1.1em; margin-top:0.8em"><strong>ShotSift.</strong> <span style="color:var(--accent2)">The cull happens while you shoot.</span></p>
+</section>
+
+<!-- APPENDIX -->
+
+</div>
+</div>
+<script>
+
+</script>
+</body>
+</html>

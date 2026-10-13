@@ -13,8 +13,8 @@ Background: your best event photo, full-bleed, with a ShotSift star overlay.
 
 ### 2. Midnight after every event
 Personal hook with YOUR numbers from your photo library:
-- Frames shot vs. frames delivered across your last [N] events
-- [Hours] spent culling per event
+- Frames shot vs. frames delivered across your last 20 events
+- 3–4 hours spent culling per event
 Visual: a 2,000-thumbnail grid screenshot.
 This slide works because it's real data from a working photographer.
 
