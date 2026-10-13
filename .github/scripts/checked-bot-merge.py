@@ -10,8 +10,7 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
-import subprocess  # nosec B404: only used for bounded, list-form gh invocations below.
+import subprocess
 
 BOTS = {
     'dependabot': {'dependabot[bot]'},
@@ -42,13 +41,7 @@ def decision(pr, required, checks, expected_head, allowed):
 
 
 def gh(*args, checks=False):
-    executable = shutil.which('gh')
-    if executable is None:
-        raise RuntimeError("GitHub CLI executable 'gh' was not found on PATH")
-    executable = str(Path(executable).resolve())
-    result = subprocess.run(  # nosec B603: absolute executable, fixed argv, shell=False, bounded timeout.
-        [executable, *args], capture_output=True, text=True, timeout=45, check=False
-    )
+    result = subprocess.run(['gh', *args], capture_output=True, text=True, timeout=45, check=False)
     # gh pr checks uses 8 for pending and 1 for failed checks. Its JSON is still
     # evaluated below. Missing/malformed output or API failures never pass.
     accepted = {0, 1, 8} if checks else {0}
