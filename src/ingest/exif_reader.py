@@ -4,9 +4,12 @@ Looks for:
 - EXIF Rating (0-5 stars) and RatingPercent
 - XMP xmp:Rating embedded in JPEG
 """
+import logging
 import struct
 from datetime import datetime
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 try:
     import piexif
@@ -48,8 +51,8 @@ def get_exif_data(path: str | Path) -> dict:
                     dt.decode() if isinstance(dt, bytes) else dt,
                     "%Y:%m:%d %H:%M:%S",
                 )
-            except (ValueError, AttributeError):
-                pass
+            except (ValueError, AttributeError) as exc:
+                logger.debug("Ignoring invalid EXIF DateTimeOriginal in %s: %s", path, exc)
 
         make = zeroth.get(piexif.ImageIFD.Make)
         if make:
@@ -57,8 +60,8 @@ def get_exif_data(path: str | Path) -> dict:
         model = zeroth.get(piexif.ImageIFD.Model)
         if model:
             result["model"] = model.decode().strip("\x00") if isinstance(model, bytes) else str(model)
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.debug("Could not read EXIF metadata from %s: %s", path, exc)
     return result
 
 
@@ -77,8 +80,8 @@ def get_xmp_rating(path: str | Path) -> int | None:
         m = re.search(rb'xmp:Rating\s*=\s*"(\d)"', snippet)
         if m:
             return int(m.group(1))
-    except Exception:
-        pass
+    except Exception as exc:
+        logger.debug("Could not read embedded XMP rating from %s: %s", path, exc)
     return None
 
 

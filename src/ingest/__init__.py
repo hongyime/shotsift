@@ -1,12 +1,15 @@
 """Ingest: discover images, extract EXIF metadata."""
 from __future__ import annotations
 
+import logging
 import os
 from dataclasses import dataclass
 from datetime import datetime
 
 from PIL import Image
 from PIL.ExifTags import TAGS
+
+logger = logging.getLogger(__name__)
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".webp"}
 
@@ -48,8 +51,8 @@ def read_frame(path: str) -> Frame:
                 exif_ifd = exif.get_ifd(0x8769)
                 for k, v in exif_ifd.items():
                     tags.setdefault(TAGS.get(k, k), v)
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.debug("Could not read EXIF IFD from %s: %s", path, exc)
             frame.captured_at = _exif_datetime(str(tags.get("DateTimeOriginal", "")))
             frame.camera_serial = str(tags.get("BodySerialNumber", ""))
             frame.focal_length = str(tags.get("FocalLength", ""))
@@ -58,10 +61,10 @@ def read_frame(path: str) -> Frame:
             if rating is not None:
                 try:
                     frame.embedded_rating = int(rating)
-                except (TypeError, ValueError):
-                    pass
-    except Exception:
-        pass
+                except (TypeError, ValueError) as exc:
+                    logger.debug("Ignoring invalid EXIF rating in %s: %s", path, exc)
+    except Exception as exc:
+        logger.debug("Could not read image metadata from %s: %s", path, exc)
     return frame
 
 

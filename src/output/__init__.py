@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import html
 import os
-from xml.sax.saxutils import escape
 
 from ..scoring import ScoredFrame
 
@@ -13,7 +12,9 @@ def label_for(stars: int) -> str:
 
 
 def write_xmp(scored: ScoredFrame, caption: str = "", keywords: list[str] | None = None) -> str:
-    kw = "".join("<rdf:li>" + escape(k) + "</rdf:li>" for k in (keywords or []))
+    kw = "".join(
+        "<rdf:li>" + html.escape(k, quote=False) + "</rdf:li>" for k in (keywords or [])
+    )
     content = (
         "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\">\n"
         " <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">\n"
@@ -22,7 +23,7 @@ def write_xmp(scored: ScoredFrame, caption: str = "", keywords: list[str] | None
         "    xmp:Rating=\"" + str(scored.star_rating) + "\"\n"
         "    xmp:Label=\"" + label_for(scored.star_rating) + "\">\n"
         "   <dc:description><rdf:Alt><rdf:li xml:lang=\"x-default\">"
-        + escape(caption) + "</rdf:li></rdf:Alt></dc:description>\n"
+        + html.escape(caption, quote=False) + "</rdf:li></rdf:Alt></dc:description>\n"
         "   <dc:subject><rdf:Bag>" + kw + "</rdf:Bag></dc:subject>\n"
         "  </rdf:Description>\n </rdf:RDF>\n</x:xmpmeta>\n"
     )

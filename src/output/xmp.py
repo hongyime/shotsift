@@ -8,8 +8,8 @@ Writes <basename>.xmp next to the image with:
 
 Lightroom / Capture One / darktable pick these up on import.
 """
+import html
 from pathlib import Path
-from xml.sax.saxutils import escape
 
 
 XMP_TEMPLATE = """<?xml version="1.0" encoding="UTF-8"?>
@@ -45,12 +45,14 @@ def write_xmp(
     out_dir: str | Path | None = None,
 ) -> Path:
     image_path = Path(image_path)
-    kw_xml = "\n".join(f"     <rdf:li>{escape(k)}</rdf:li>" for k in (keywords or []))
+    kw_xml = "\n".join(
+        f"     <rdf:li>{html.escape(k, quote=False)}</rdf:li>" for k in (keywords or [])
+    )
     content = XMP_TEMPLATE.format(
         rating=max(0, min(5, rating)),
-        label=escape(label),
+        label=html.escape(label, quote=False),
         keywords=kw_xml,
-        caption=escape(caption),
+        caption=html.escape(caption, quote=False),
     )
     dest_dir = Path(out_dir) if out_dir else image_path.parent
     dest = dest_dir / (image_path.stem + ".xmp")
