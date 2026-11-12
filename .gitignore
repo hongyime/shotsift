@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 demo/
 models/*.onnx
+!models/face_detection_yunet_2023mar.onnx
 .DS_Store
 
 # AI / editor dot directories (managed via sourcerepo)

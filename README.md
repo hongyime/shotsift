@@ -9,9 +9,9 @@ ShotSift scores every frame as it's shot, groups bursts, rejects blinks and soft
 Working on laptop CPU, no accelerator required:
 
 - **Ingest**: discovers JPEGs, extracts EXIF (datetime, camera, embedded ratings if present)
-- **Vision**: Haar-cascade face detection, Laplacian-variance focus scoring, histogram exposure scoring, heuristic blink detection
+- **Vision**: YuNet face detection, Laplacian-variance focus scoring, histogram exposure scoring, heuristic blink detection
 - **Scoring**: burst grouping by capture-time gaps (≤3s), per-burst keeper ranking (70% focus + 30% exposure, hard blink reject)
-- **Output**: XMP sidecars (rating, color label, keywords, caption), HTML gallery, `summary.json`
+- **Output**: XMP sidecars beneath the output directory (rating, color label, keywords, caption), preview-backed HTML gallery, `summary.json`
 
 ### Run it
 
@@ -24,7 +24,7 @@ python3 -m venv venv && ./venv/bin/pip install -r requirements.txt
 
 | Component | Stage I status |
 |---|---|
-| Face detection (Haar) | ✅ Working |
+| Face detection (YuNet) | ✅ Working |
 | Focus / exposure scoring | ✅ Working |
 | Blink reject (heuristic) | ✅ Working |
 | Burst grouping (EXIF time) | ✅ Working |

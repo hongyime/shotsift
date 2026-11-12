@@ -4,8 +4,10 @@ Usage: python -m src.main <input_dir> <output_dir>
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
+from pathlib import Path
 
 import cv2
 
@@ -14,12 +16,14 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.ingest import discover
 from src.output import write_gallery, write_xmp
 from src.scoring import ScoredFrame, group_bursts, rate_burst_best
-from src.vision import FaceDetector, exposure_clipping, laplacian_focus
+from src.vision import FaceDetector, exposure_clipping, laplacian_focus, resize_quality_image
 
 
 def process_directory(input_dir: str, output_dir: str) -> list[ScoredFrame]:
-    os.makedirs(output_dir, exist_ok=True)
-    frames = discover(input_dir)
+    input_root = Path(input_dir)
+    output_root = Path(output_dir)
+    output_root.mkdir(parents=True, exist_ok=True)
+    frames = discover(str(input_root))
     print("discovered %d frames in %s" % (len(frames), input_dir))
     detector = FaceDetector()
     scored: list[ScoredFrame] = []
@@ -28,11 +32,13 @@ def process_directory(input_dir: str, output_dir: str) -> list[ScoredFrame]:
         if img is None:
             print("  skip (unreadable): %s" % frame.path)
             continue
-        faces = detector.detect(img)
-        exp = exposure_clipping(img)
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        faces = detector.detect(img, gray)
+        quality = resize_quality_image(gray)
+        exp = exposure_clipping(quality)
         s = ScoredFrame(
             frame=frame, faces=faces,
-            focus_score=laplacian_focus(img),
+            focus_score=laplacian_focus(quality),
             black_clip=exp["black_clip"], white_clip=exp["white_clip"],
             blink=bool(faces) and not any(f.eyes_open for f in faces),
         )
@@ -41,8 +47,20 @@ def process_directory(input_dir: str, output_dir: str) -> list[ScoredFrame]:
     print("grouped into %d bursts" % len(bursts))
     rate_burst_best(bursts)
     for s in scored:
-        write_xmp(s)
-    gallery = write_gallery(scored, os.path.join(output_dir, "gallery.html"))
+        write_xmp(s, input_root, output_root)
+    gallery = write_gallery(scored, output_root / "gallery.html", input_root=input_root)
+    star_counts = {str(stars): sum(s.star_rating == stars for s in scored) for stars in range(1, 6)}
+    (output_root / "summary.json").write_text(
+        json.dumps({
+            "discovered_frame_count": len(frames),
+            "scored_frame_count": len(scored),
+            "unreadable_frame_count": len(frames) - len(scored),
+            "burst_count": len(bursts),
+            "keeper_count": sum(s.is_burst_best for s in scored),
+            "star_rating_counts": star_counts,
+        }, indent=2) + "\n",
+        encoding="utf-8",
+    )
     print("wrote %d XMP sidecars; gallery: %s" % (len(scored), gallery))
     best = [s for s in scored if s.is_burst_best]
     print("burst-best picks: %d" % len(best))

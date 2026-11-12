@@ -1,13 +1,13 @@
 """Smoke tests for the ShotSift Stage I prototype."""
 from __future__ import annotations
 
-import os
 import sys
 import tempfile
 import unittest
 from datetime import datetime, timedelta
+from pathlib import Path
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from src.ingest import Frame
 from src.scoring import ScoredFrame, group_bursts, rate_burst_best, score_keeper
@@ -55,11 +55,15 @@ class TestXmp(unittest.TestCase):
         s = make_frame("x.jpg")
         s.star_rating = 4
         with tempfile.TemporaryDirectory() as d:
-            s.frame.path = os.path.join(d, "x.jpg")
-            open(s.frame.path, "wb").write(b"fake")
-            sidecar = write_xmp(s, caption="test caption", keywords=["event"])
-            self.assertTrue(os.path.exists(sidecar))
-            body = open(sidecar).read()
+            input_root = Path(d) / "input"
+            input_root.mkdir()
+            source = input_root / "x.jpg"
+            source.write_bytes(b"fake")
+            s.frame.path = str(source)
+            output_root = Path(d) / "output"
+            sidecar = write_xmp(s, input_root, output_root, caption="test caption", keywords=["event"])
+            self.assertTrue(sidecar.exists())
+            body = sidecar.read_text(encoding="utf-8")
             self.assertIn("xmp:Rating=\"4\"", body)
             self.assertIn("test caption", body)
 
